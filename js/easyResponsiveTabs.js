@@ -16,8 +16,9 @@
                 active_content_border_color: '#c1c1c1',
                 activate: function () {
                 },
-                trackHistory: false
-            }
+				trackHistory: false,
+				auto_collapse: true
+			}
             //Variables
             var options = $.extend(defaults, options);
             var opt = options, jtype = opt.type, jfit = opt.fit, jwidth = opt.width, vtabs = 'vertical', accord = 'accordion';
@@ -149,7 +150,8 @@
                         var $tabAria = $currentTab.attr('aria-controls');
 
                         if ($currentTab.hasClass('resp-accordion') && $currentTab.hasClass('resp-tab-active')) {
-                            $respTabs.find('.resp-tab-content-active.' + options.tabidentify).slideUp('', function () {
+
+                            $respTabs.find('.resp-tab-content[aria-labelledby = ' + $tabAria + '].' + options.tabidentify).slideUp('', function () {
                                 $(this).addClass('resp-accordion-closed');
                             });
                             $currentTab.removeClass('resp-tab-active').css({
@@ -159,11 +161,15 @@
                             return false;
                         }
                         if (!$currentTab.hasClass('resp-tab-active') && $currentTab.hasClass('resp-accordion')) {
-                            $respTabs.find('.resp-tab-active.' + options.tabidentify).removeClass('resp-tab-active').css({
-                                'background-color': options.inactive_bg,
-                                'border-color': 'none'
-                            });
-                            $respTabs.find('.resp-tab-content-active.' + options.tabidentify).slideUp().removeClass('resp-tab-content-active resp-accordion-closed');
+							if(options.auto_collapse){
+								$respTabs.find('.resp-tab-active.' + options.tabidentify).removeClass('resp-tab-active').css({
+									'background-color': options.inactive_bg,
+									'border-color': 'none'
+								});
+								$respTabs.find('.resp-tab-content-active.' + options.tabidentify).slideUp().removeClass('resp-tab-content-active resp-accordion-closed');
+							}
+
+
                             $respTabs.find("[aria-controls=" + $tabAria + "]").addClass('resp-tab-active').css({
                                 'background-color': options.activetab_bg,
                                 'border-color': options.active_border_color
@@ -171,7 +177,6 @@
 
                             $respTabs.find('.resp-tab-content[aria-labelledby = ' + $tabAria + '].' + options.tabidentify).slideDown().addClass('resp-tab-content-active');
                         } else {
-                            console.log('here');
                             $respTabs.find('.resp-tab-active.' + options.tabidentify).removeClass('resp-tab-active').css({
                                 'background-color': options.inactive_bg,
                                 'border-color': 'none'
